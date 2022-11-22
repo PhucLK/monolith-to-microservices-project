@@ -88,4 +88,24 @@ Launch the frontend app locally.
 
 
 
+eksctl delete cluster --name udacity607634559408 --region us-east-1  
+eksctl create cluster --name udacity607634559408 --region us-east-1 --node-type m5.large --nodes 1
 
+kubectl apply -f kubernetes/aws-secret.yml
+kubectl apply -f kubernetes/env-secret.yml
+kubectl apply -f kubernetes/env-configmap.yml
+kubectl apply -f kubernetes/feed-api-deployment.yml
+kubectl apply -f kubernetes/feed-api-service.yml
+kubectl apply -f kubernetes/user-api-deployment.yml
+kubectl apply -f kubernetes/user-api-service.yml
+kubectl apply -f kubernetes/frontend-deployment.yml
+kubectl apply -f kubernetes/frontend-service.yml
+kubectl apply -f kubernetes/reverseproxy-deployment.yml
+kubectl apply -f kubernetes/reverseproxy-service.yml
+
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+
+kubectl autoscale deployment udagram-feed-api --cpu-percent=50 --min=1 --max=2
+
+kubectl expose deployment udagram-frontend --type=LoadBalancer --name=publicfrontend --port=80
+kubectl expose deployment udagram-reverseproxy --type=LoadBalancer --name=publicreverseproxy
