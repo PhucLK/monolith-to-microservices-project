@@ -7,7 +7,7 @@ services:
 
 branches:
   only:
-  - master
+  - main
 
 before_install:
   - echo "no tests"
