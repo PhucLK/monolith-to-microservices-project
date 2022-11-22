@@ -1,0 +1,28 @@
+language: node_js
+node_js:
+  - 12
+
+services:
+  - docker
+
+branches:
+  only:
+  - master
+
+before_install:
+  - echo "no tests"
+
+script:
+  - docker --version
+  - docker build -f udagram-feed-api/Dockerfile -t  0357860030/udagram-feed-api:latest udagram-feed-api
+  - docker build -f udagram-user-api/Dockerfile -t  0357860030/udagram-user-api:latest udagram-user-api
+  - docker build -f udagram-frontend/Dockerfile -t  0357860030/udagram-frontend:latest udagram-frontend
+  - docker build -f udagram-reverseproxy/Dockerfile -t  0357860030/udagram-reverseproxy:latest udagram-reverseproxy
+
+
+after_success:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker push 0357860030/udagram-feed-api:latest
+  - docker push 0357860030/udagram-user-api:latest
+  - docker push 0357860030/udagram-frontend:latest
+  - docker push 0357860030/udagram-reverseproxy:latest

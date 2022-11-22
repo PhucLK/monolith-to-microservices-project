@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: udagram-feed-api
+  labels:
+    app: udagram-feed-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: udagram-feed-api
+  template:
+    metadata:
+      labels:
+        app: udagram-feed-api
+    spec:
+      containers:
+      - name: udagram-feed-api
+        image: 0357860030/udagram-feed-api:latest
+        ports:
+          - containerPort: 8080
+        imagePullPolicy: Always  
+        resources:
+          requests:
+            memory: "1024Mi"
+            cpu: "300m"
+          limits:
+            memory: "1800Mi"
+            cpu: "500m"
+        envFrom:
+        - configMapRef:
+            name: env-config
+        env:
+        - name: POSTGRES_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: env-secret
+              key: POSTGRES_USERNAME
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: env-secret
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: POSTGRES_HOST
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: POSTGRES_DB
+        - name: AWS_BUCKET
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: AWS_BUCKET
+        - name: AWS_REGION
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: AWS_REGION
+        - name: AWS_PROFILE
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: AWS_PROFILE
+        - name: JWT_SECRET
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: JWT_SECRET
+        - name: URL
+          valueFrom:
+            configMapKeyRef:
+              name: env-config
+              key: URL
+      restartPolicy: Always
